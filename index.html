@@ -1,0 +1,925 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>NVT SOO · Class Planner</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --g:#4A7C59;--gd:#3B6347;--gl:#5E9E6E;--gp:#E8F2EB;--gm:#F2F8F4;
+  --gold:#C9A84C;--gold-l:#F5EED6;--cream:#FAFAF6;--w:#FFF;
+  --t:#1A2E1A;--tm:#4A5D4A;--tl:#7A8D7A;--bdr:#E2E8E4;
+  --red:#C75050;--red-bg:#FDF2F2;--ok:#3B8C5A;--ok-bg:#EDFAF2;
+  --sh:0 4px 16px rgba(74,124,89,.08);--sh-lg:0 12px 40px rgba(74,124,89,.12);
+  --r:20px;--rs:14px;
+}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;background:var(--cream);color:var(--t);min-height:100dvh;overflow-x:hidden;-webkit-font-smoothing:antialiased}
+
+.hero{background:linear-gradient(165deg,#2D5A3D,#4A7C59 40%,#5E9E6E);padding:22px 20px 54px;position:relative;overflow:hidden}
+.hero::before{content:'';position:absolute;top:-50%;right:-30%;width:300px;height:300px;background:radial-gradient(circle,rgba(201,168,76,.15),transparent 70%);border-radius:50%}
+.hero-badge{display:inline-flex;align-items:center;gap:6px;background:rgba(255,255,255,.12);backdrop-filter:blur(10px);padding:6px 14px;border-radius:20px;font-size:11px;font-weight:600;color:rgba(255,255,255,.9);letter-spacing:.5px;text-transform:uppercase;margin-bottom:12px;border:1px solid rgba(255,255,255,.15)}
+.hero h1{font-family:'Playfair Display',Georgia,serif;font-size:24px;font-weight:700;color:#fff;line-height:1.2;position:relative;z-index:1}
+.hero h1 span{color:var(--gold)}
+.hero p{font-size:12px;color:rgba(255,255,255,.7);margin-top:5px;position:relative;z-index:1}
+
+.nav-wrap{padding:0 16px;margin-top:-26px;position:relative;z-index:20}
+.nav-tabs{display:flex;gap:3px;background:var(--w);border-radius:14px;padding:4px;box-shadow:var(--sh-lg);border:1px solid var(--bdr)}
+.nav-tab{flex:1;padding:11px 4px;border:none;border-radius:10px;font-size:11px;font-weight:600;cursor:pointer;transition:all .3s cubic-bezier(.4,0,.2,1);background:transparent;color:var(--tl);display:flex;flex-direction:column;align-items:center;gap:2px;font-family:'Inter',sans-serif}
+.nav-tab .ico{font-size:18px;transition:transform .3s}
+.nav-tab.active{background:var(--g);color:#fff;box-shadow:0 4px 12px rgba(74,124,89,.3)}
+.nav-tab.active .ico{transform:scale(1.1)}
+.nav-tab:not(.active):active{background:var(--gp)}
+.pc{background:var(--gold);color:#fff;font-size:9px;font-weight:700;min-width:16px;height:16px;border-radius:8px;display:inline-flex;align-items:center;justify-content:center;padding:0 4px;margin-left:2px}
+
+.content{padding:18px 16px 110px}
+.sec{display:none;animation:su .4s ease}.sec.active{display:block}
+@keyframes su{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+
+.card{background:var(--w);border-radius:var(--r);padding:20px;margin-bottom:14px;box-shadow:var(--sh);border:1px solid var(--bdr);position:relative;overflow:hidden}
+.card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--g),var(--gold));opacity:0;transition:opacity .3s}
+.card:hover::before{opacity:1}
+.cl{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1.2px;color:var(--g);margin-bottom:5px}
+.ct{font-family:'Playfair Display',serif;font-size:17px;font-weight:600;color:var(--t);margin-bottom:12px;line-height:1.3}
+
+.sub-tabs{display:flex;gap:4px;margin-bottom:16px;background:var(--gm);border-radius:12px;padding:4px}
+.sub-tab{flex:1;padding:9px;border:none;border-radius:10px;font-size:12px;font-weight:600;cursor:pointer;transition:all .25s;background:transparent;color:var(--tl);text-align:center;font-family:'Inter',sans-serif}
+.sub-tab.active{background:var(--w);color:var(--g);box-shadow:0 2px 8px rgba(0,0,0,.06)}
+
+textarea{width:100%;min-height:90px;padding:14px;border:2px solid var(--bdr);border-radius:var(--rs);font-size:15px;font-family:'Inter',sans-serif;color:var(--t);background:var(--gm);resize:none;transition:border-color .3s,box-shadow .3s;line-height:1.5}
+textarea:focus{outline:none;border-color:var(--g);box-shadow:0 0 0 4px rgba(74,124,89,.1);background:var(--w)}
+textarea::placeholder{color:var(--tl)}
+
+.btn{width:100%;padding:15px;border:none;border-radius:var(--rs);font-size:15px;font-weight:700;cursor:pointer;transition:all .3s cubic-bezier(.4,0,.2,1);display:flex;align-items:center;justify-content:center;gap:8px;font-family:'Inter',sans-serif;letter-spacing:.2px;position:relative;overflow:hidden}
+.btn::after{content:'';position:absolute;inset:0;background:linear-gradient(rgba(255,255,255,.15),transparent);pointer-events:none}
+.btn-g{background:linear-gradient(135deg,var(--g),var(--gd));color:#fff;box-shadow:0 4px 16px rgba(74,124,89,.3)}
+.btn-g:active{transform:scale(.97)}
+.btn-gold{background:linear-gradient(135deg,var(--gold),#B8963E);color:#fff;box-shadow:0 4px 16px rgba(201,168,76,.3)}
+.btn-gold:active{transform:scale(.97)}
+.btn-o{background:transparent;border:2px solid var(--g);color:var(--g);box-shadow:none}.btn-o::after{display:none}.btn-o:active{background:var(--gp)}
+.btn-sm{padding:10px 16px;font-size:13px;width:auto;border-radius:10px}
+.btn-xs{padding:7px 14px;font-size:12px;width:auto;border-radius:8px}
+
+.age-sel{margin-bottom:16px}
+.age-disp{text-align:center;margin-bottom:8px}
+.age-disp .num{font-family:'Playfair Display',serif;font-size:44px;font-weight:700;color:var(--g);line-height:1}
+.age-disp .lbl{font-size:12px;color:var(--tl);font-weight:500}
+input[type=range]{width:100%;-webkit-appearance:none;appearance:none;height:8px;border-radius:4px;background:linear-gradient(90deg,var(--gp),var(--g));outline:none}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:30px;height:30px;border-radius:50%;background:var(--w);border:3px solid var(--g);box-shadow:0 2px 10px rgba(74,124,89,.25);cursor:pointer}
+
+.goal-chips{display:flex;flex-wrap:wrap;gap:7px;margin-bottom:14px}
+.goal-chip{padding:8px 14px;border-radius:20px;border:2px solid var(--bdr);background:var(--w);font-size:12px;font-weight:500;color:var(--tm);cursor:pointer;transition:all .2s;font-family:'Inter',sans-serif}
+.goal-chip.on{border-color:var(--g);background:var(--gp);color:var(--g);font-weight:600}
+
+.sg-chips{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:12px}
+.sg-chip{padding:7px 12px;border-radius:18px;border:1.5px solid var(--bdr);background:var(--w);font-size:12px;font-weight:500;color:var(--tm);cursor:pointer;transition:all .2s;font-family:'Inter',sans-serif}
+.sg-chip:active{background:var(--gp);border-color:var(--g);color:var(--g)}
+
+/* FILTER PILLS for Classes tab */
+.filter-bar{display:flex;gap:6px;overflow-x:auto;padding-bottom:8px;margin-bottom:14px;-webkit-overflow-scrolling:touch;scrollbar-width:none}
+.filter-bar::-webkit-scrollbar{display:none}
+.fp{padding:7px 14px;border-radius:18px;border:1.5px solid var(--bdr);background:var(--w);font-size:12px;font-weight:600;color:var(--tm);cursor:pointer;transition:all .2s;white-space:nowrap;font-family:'Inter',sans-serif;flex-shrink:0}
+.fp.on{border-color:var(--g);background:var(--g);color:#fff}
+
+/* CLASS BROWSE CARD (Classes tab) */
+.bc{background:var(--w);border-radius:var(--rs);border:1px solid var(--bdr);margin-bottom:10px;overflow:hidden;transition:all .25s;box-shadow:0 1px 6px rgba(74,124,89,.04)}
+.bc-head{display:flex;align-items:center;gap:12px;padding:14px 16px;cursor:pointer}
+.bc-head .bci{width:42px;height:42px;border-radius:11px;display:flex;align-items:center;justify-content:center;font-size:20px;background:var(--gp);flex-shrink:0}
+.bc-head .bcn{flex:1;min-width:0}
+.bc-head .bcn h4{font-size:14px;font-weight:600}
+.bc-head .bcn .bcs{font-size:11px;color:var(--tl);margin-top:1px}
+.bc-head .bca{padding:6px 12px;border-radius:8px;border:2px solid var(--g);font-size:11px;font-weight:700;color:var(--g);background:transparent;cursor:pointer;transition:all .2s;font-family:'Inter',sans-serif;flex-shrink:0}
+.bc-head .bca.added{background:var(--g);color:#fff}
+.bc-body{padding:0 16px 14px;display:none}
+.bc.open .bc-body{display:block}
+.bc-row{display:flex;align-items:center;gap:8px;padding:5px 0;font-size:12px;color:var(--tm)}
+.bc-row .bc-icon{width:16px;text-align:center;flex-shrink:0}
+.bc-batches{margin-top:6px}
+.bc-batch{display:flex;align-items:center;gap:8px;padding:6px 10px;background:var(--gm);border-radius:8px;margin-bottom:4px;font-size:12px}
+.bc-batch .bb-time{font-weight:700;color:var(--g);min-width:90px}
+.bc-batch .bb-label{color:var(--tm);font-weight:500}
+
+/* RESULT CARD */
+.rc{background:var(--w);border-radius:var(--r);padding:18px;margin-bottom:12px;border:1px solid var(--bdr);box-shadow:0 2px 12px rgba(74,124,89,.06);position:relative;overflow:hidden;animation:su .35s ease}
+.rc.external{border-left:4px solid var(--gold);background:linear-gradient(135deg,#FFFDF5,var(--w))}
+.rc .rb{position:absolute;top:0;right:18px;background:var(--gold);color:#fff;font-size:10px;font-weight:700;padding:3px 9px 5px;border-radius:0 0 8px 8px;letter-spacing:.5px}
+.rc .rb.avail{background:var(--ok)}
+.rc .rh{display:flex;align-items:center;gap:12px;margin-bottom:10px}
+.rc .ri{width:46px;height:46px;border-radius:13px;display:flex;align-items:center;justify-content:center;font-size:22px;background:var(--gp)}
+.rc.external .ri{background:var(--gold-l)}
+.rc .rh h3{font-family:'Playfair Display',serif;font-size:16px;font-weight:600}
+.rc .rh .co{font-size:12px;color:var(--tl);margin-top:2px}
+.mr{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:8px}
+.mp{display:inline-flex;align-items:center;gap:4px;padding:4px 9px;border-radius:8px;font-size:11px;font-weight:500;background:var(--gm);color:var(--tm)}
+.tg{display:inline-block;padding:3px 9px;border-radius:20px;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;margin-right:3px}
+.tg-physical{background:#E3F9EF;color:#2D7A4F}.tg-creative{background:#FFF0F5;color:#B44D78}.tg-mental{background:#EDE8FF;color:#5B47A5}.tg-fitness{background:#FFF4E0;color:#C07A30}
+.rmk{font-size:11px;font-style:italic;color:var(--tl);padding:7px 11px;background:var(--gold-l);border-radius:8px;margin-top:6px;line-height:1.4}
+.cp{display:inline-flex;align-items:center;gap:4px;padding:4px 10px;background:var(--gm);border-radius:8px;font-size:11px;color:var(--g);font-weight:600;text-decoration:none;margin-top:5px}
+.prep-s{margin-top:12px;padding-top:12px;border-top:1px solid var(--bdr)}
+.prep-s h5{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:var(--g);margin-bottom:8px}
+.pi{display:flex;gap:10px;padding:6px 0}.pi .dt{width:5px;height:5px;border-radius:50%;background:var(--gold);margin-top:7px;flex-shrink:0}.pi p{font-size:12px;line-height:1.5;color:var(--tm)}
+
+.add-plan{display:inline-flex;align-items:center;gap:5px;padding:7px 14px;border-radius:9px;border:2px solid var(--g);background:var(--gp);color:var(--g);font-size:12px;font-weight:700;cursor:pointer;transition:all .2s;margin-top:8px;font-family:'Inter',sans-serif}
+.add-plan:active,.add-plan.added{background:var(--g);color:#fff;border-color:var(--g)}
+
+.ext-badge{display:block;padding:8px 12px;border-radius:8px;font-size:11px;font-weight:500;background:#FFF8E8;color:#8B7A2E;border:1px solid #E8DFB8;margin-top:8px;line-height:1.5}
+
+.al{border-radius:var(--rs);padding:14px;margin-bottom:12px;animation:su .35s ease}
+.al-r{background:var(--red-bg);border:1px solid #F5D5D5}.al-r h4{color:var(--red)}
+.al-g{background:var(--ok-bg);border:1px solid #C3E8D1}.al-g h4{color:var(--ok)}
+.al h4{font-size:13px;font-weight:700;margin-bottom:5px;display:flex;align-items:center;gap:6px}
+.al p{font-size:12px;line-height:1.5;color:var(--tm)}.al p+p{margin-top:3px}
+.sug-c{background:var(--gold-l);border:1px solid #E8DFB8;border-radius:var(--rs);padding:14px;margin-bottom:12px}
+.sug-c h4{font-size:13px;font-weight:700;color:#8B7A2E;margin-bottom:6px}.sug-c p{font-size:12px;line-height:1.5;color:var(--tm);margin-bottom:5px}
+
+.wc{background:var(--w);border-radius:var(--r);overflow:hidden;margin-bottom:12px;border:1px solid var(--bdr);box-shadow:var(--sh)}
+.wdh{padding:9px 16px;background:var(--g);color:#fff;font-size:12px;font-weight:700;letter-spacing:.8px;text-transform:uppercase}
+.wi{display:flex;align-items:center;gap:10px;padding:10px 16px;border-bottom:1px solid var(--bdr)}.wi:last-child{border-bottom:none}
+.wt{font-size:10px;font-weight:700;color:var(--g);min-width:62px;line-height:1.4}
+.wi .wki{font-size:18px}.wi .wkn{flex:1}.wi .wkn h5{font-size:12px;font-weight:600}.wi .wkn p{font-size:10px;color:var(--tl)}
+
+.dv{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1.5px;color:var(--tl);margin:20px 0 12px;display:flex;align-items:center;gap:10px}
+.dv::after{content:'';flex:1;height:1px;background:var(--bdr)}
+
+.empty{text-align:center;padding:36px 20px}.empty .eico{font-size:48px;margin-bottom:12px}.empty p{font-size:13px;color:var(--tl);line-height:1.6}
+
+.bb{position:fixed;bottom:0;left:0;right:0;background:var(--w);padding:10px 16px;box-shadow:0 -4px 20px rgba(0,0,0,.06);z-index:100;display:none;border-top:1px solid var(--bdr)}
+.bb.show{display:flex;gap:8px;align-items:center}
+.bb .bb-info{flex:1;font-size:12px;color:var(--tm);font-weight:500;line-height:1.3}
+.bb .bb-info strong{color:var(--g)}
+@supports(padding:max(0px)){.bb{padding-bottom:max(10px,env(safe-area-inset-bottom))}}
+
+.plan-add-area{text-align:center;padding:18px;background:var(--gm);border-radius:var(--rs);border:2px dashed var(--bdr);margin-bottom:14px}
+.plan-add-area p{font-size:13px;color:var(--tl);margin-bottom:8px}
+
+/* Plan class remove card */
+.pc-card{display:flex;align-items:center;gap:12px;padding:12px 14px;background:var(--gm);border:1px solid var(--bdr);border-radius:var(--rs);margin-bottom:6px}
+.pc-card .pci{width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:18px;background:var(--gp);flex-shrink:0}
+.pc-card .pcn{flex:1;min-width:0}.pc-card .pcn h5{font-size:13px;font-weight:600}.pc-card .pcn p{font-size:10px;color:var(--tl)}
+.pc-card .pcx{width:28px;height:28px;border-radius:50%;border:none;background:var(--red-bg);color:var(--red);font-size:14px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:background .2s}
+.pc-card .pcx:active{background:var(--red);color:#fff}
+
+/* Count badge */
+.class-count{font-size:12px;color:var(--tl);font-weight:500;margin-bottom:12px}
+.class-count strong{color:var(--g)}
+
+@media(min-width:480px){.content,.nav-wrap{max-width:480px;margin-left:auto;margin-right:auto}}
+</style>
+</head>
+<body>
+<div class="hero">
+  <div class="hero-badge">🌳 NVT Symphony of Orchards</div>
+  <h1>Summer <span>Class Planner</span></h1>
+  <p>April & May 2026 · Sarjapur Road, Bangalore</p>
+  <div id="sheetBadge" style="display:none;margin-top:8px"><span style="display:inline-flex;align-items:center;gap:4px;background:rgba(255,255,255,.12);backdrop-filter:blur(10px);padding:4px 10px;border-radius:12px;font-size:10px;color:rgba(255,255,255,.75);border:1px solid rgba(255,255,255,.15)">🟢 Live · Updates from schedule sheet</span></div>
+</div>
+<div class="nav-wrap">
+  <div class="nav-tabs">
+    <button class="nav-tab active" onclick="go('explore')"><span class="ico">🔍</span>Explore</button>
+    <button class="nav-tab" onclick="go('classes')"><span class="ico">📚</span>Classes</button>
+    <button class="nav-tab" onclick="go('plan')"><span class="ico">📅</span>Plan <span class="pc" id="planCount" style="display:none">0</span></button>
+  </div>
+</div>
+<div class="content">
+  <!-- EXPLORE -->
+  <div id="explore" class="sec active">
+    <div class="card">
+      <div class="cl">Discover</div>
+      <div class="ct">Find the right classes for your child</div>
+      <div class="sub-tabs">
+        <button class="sub-tab active" onclick="subTab('nlp')">💬 Describe Goals</button>
+        <button class="sub-tab" onclick="subTab('form')">🎛️ Quick Filters</button>
+      </div>
+      <div id="nlpMode">
+        <div class="sg-chips">
+          <span class="sg-chip" onclick="fill('I want my daughter to get into a good US college after IB — need strong extracurriculars')">🎓 College Prep</span>
+          <span class="sg-chip" onclick="fill('I want my son to become a national level player in a sport with less competition')">🏆 Go National</span>
+          <span class="sg-chip" onclick="fill('My child spends too much time on screens, I want to build an active lifestyle')">💪 Get Active</span>
+          <span class="sg-chip" onclick="fill('I want my child to develop creativity through art, music and dance')">🎨 Creative</span>
+          <span class="sg-chip" onclick="fill('My child is hyperactive and needs to build focus, discipline and patience')">🧘 Focus</span>
+          <span class="sg-chip" onclick="fill('My child is shy and needs to make friends and build confidence')">👫 Social</span>
+        </div>
+        <textarea id="ambInput" placeholder="e.g. 'My 6-year-old loves running around, I want to channel that into a sport, and maybe learn an instrument on weekends'"></textarea>
+        <div style="margin-top:12px"><button class="btn btn-g" onclick="exploreNLP()">✨ Get Recommendations</button></div>
+      </div>
+      <div id="formMode" style="display:none">
+        <div class="age-sel">
+          <div class="age-disp"><div class="num" id="ageNum">7</div><div class="lbl">years old</div></div>
+          <input type="range" min="3" max="16" value="7" oninput="document.getElementById('ageNum').textContent=this.value;formAge=+this.value">
+          <div style="display:flex;justify-content:space-between;font-size:11px;color:var(--tl);font-weight:600;margin-top:3px"><span>3</span><span>16</span></div>
+        </div>
+        <div class="cl" style="margin-bottom:6px">Goals (tap all that apply)</div>
+        <div class="goal-chips" id="goalChips">
+          <span class="goal-chip" data-g="physical" onclick="togGoal(this)">🏃 Fitness</span>
+          <span class="goal-chip" data-g="sport" onclick="togGoal(this)">🏅 Sport</span>
+          <span class="goal-chip" data-g="creative" onclick="togGoal(this)">🎨 Arts</span>
+          <span class="goal-chip" data-g="music" onclick="togGoal(this)">🎵 Music</span>
+          <span class="goal-chip" data-g="mental" onclick="togGoal(this)">🧠 Focus</span>
+          <span class="goal-chip" data-g="dance" onclick="togGoal(this)">💃 Dance</span>
+          <span class="goal-chip" data-g="self-defense" onclick="togGoal(this)">🥋 Self-Defense</span>
+          <span class="goal-chip" data-g="social" onclick="togGoal(this)">👫 Social</span>
+          <span class="goal-chip" data-g="water" onclick="togGoal(this)">🏊 Swimming</span>
+        </div>
+        <button class="btn btn-g" onclick="exploreForm()">🎯 Show Recommendations</button>
+      </div>
+    </div>
+    <div id="exRes"></div>
+  </div>
+
+  <!-- CLASSES -->
+  <div id="classes" class="sec">
+    <div class="card">
+      <div class="cl">All Society Classes</div>
+      <div class="ct">Browse & add to your plan</div>
+      <div class="filter-bar" id="filterBar"></div>
+      <div class="class-count" id="classCount"></div>
+      <div id="classList"></div>
+    </div>
+  </div>
+
+  <!-- PLAN -->
+  <div id="plan" class="sec">
+    <div class="card">
+      <div class="cl">Your Plan</div>
+      <div class="ct">Review, resolve clashes & download</div>
+      <div id="planList"></div>
+      <div id="planEmpty" class="plan-add-area">
+        <p>No classes added yet</p>
+        <button class="btn-xs btn-o" onclick="go('classes')">📚 Browse Classes</button>
+      </div>
+    </div>
+    <div id="planRes"></div>
+  </div>
+</div>
+
+<div class="bb" id="bottomBar">
+  <div class="bb-info" id="bbInfo"></div>
+  <button class="btn btn-gold btn-sm" onclick="downloadCal()">📥 Download .ics</button>
+</div>
+
+<script>
+// ===== CONFIGURATION =====
+// To connect to Google Sheets:
+// 1. Create a Google Sheet with columns: id,name,coach,phone,icon,days,times,loc,tags,ageMin,ageMax,kw,goals,cat,why,prep,rmk,temp,batches
+// 2. Publish it: File → Share → Publish to web → Select "Sheet1" → Choose "CSV" → Publish
+// 3. Paste the URL below
+const SHEET_CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSLo8j5t8vPi74u_NriIBMdVJZoN5a_O8F7GHwT29Klxf5Qs4LH8CboRLTH5gvbPsnq3UAMvS8cRdA4/pub?gid=0&single=true&output=csv'; // Paste your published Google Sheet CSV URL here
+const REFRESH_INTERVAL = 5 * 60 * 1000; // Re-fetch every 5 minutes
+
+// ===== SOCIETY CLASSES (fallback / default data) =====
+let SOC=[
+  {id:1,name:"Basketball",coach:"Karna",phone:"7094207063",icon:"🏀",days:["Sat","Sun"],times:[{s:"07:00",e:"09:00"}],loc:"Basketball Court",tags:["physical","fitness"],ageMin:5,ageMax:16,
+   kw:["sport","active","team","physical","outdoor","basketball","energy","run","athletic","stamina","ball"],goals:["physical","sport","social"],cat:"sport",
+   why:"Great for building teamwork, stamina and coordination. Weekend mornings keep kids active without clashing with school.",
+   prep:["Get sports shoes with good ankle support","Carry a water bottle and towel","Practice basic dribbling at home"]},
+  {id:2,name:"Zumba",coach:"Rito",phone:"9606907775",icon:"💃",days:["Mon","Wed"],times:[{s:"19:00",e:"20:00"}],loc:"Multi Purpose Hall",tags:["physical","creative","fitness"],ageMin:3,ageMax:16,
+   kw:["dance","fitness","active","fun","energy","movement","zumba","music","rhythm","exercise","cardio"],goals:["physical","dance","creative"],cat:"dance",
+   why:"Combines fitness with fun dance moves. Evening slot on weekdays is perfect for burning off after-school energy.",
+   prep:["Wear comfortable loose clothes","Bring a water bottle","No prior experience needed"]},
+  {id:3,name:"Tennis",coach:"Prem",phone:"8123481258",icon:"🎾",days:["Sat","Sun"],times:[{s:"08:00",e:"09:00"},{s:"16:00",e:"17:00"}],loc:"Tennis Court",tags:["physical","fitness"],ageMin:5,ageMax:16,
+   kw:["sport","active","tennis","racket","outdoor","individual","focus","agility","hand-eye","athletic"],goals:["physical","sport"],cat:"sport",
+   why:"Excellent individual sport that builds agility, focus and hand-eye coordination. Two time slots available for flexibility.",
+   prep:["Get a junior tennis racket","Wear non-marking sports shoes","Practice hand-eye coordination at home"]},
+  {id:4,name:"Music (Vocal)",coach:"Komal",phone:"8147305856",icon:"🎵",days:["Wed","Fri"],times:[{s:"09:30",e:"10:30"}],loc:"Multi Purpose Hall",tags:["creative"],ageMin:3,ageMax:16,
+   rmk:"Summer: Wed & Fri. From June: Sat & Sun 9:30–10:30 am",
+   kw:["music","singing","creative","art","vocal","song","instrument","melody","rhythm","perform","talent"],goals:["creative","music"],cat:"music",
+   why:"Develops vocal skills, rhythm sense and confidence. Morning slot during summer vacation makes it easy to attend.",
+   prep:["No instrument needed initially","Encourage listening to different music","Be regular — consistency matters"]},
+  {id:5,name:"Badminton",coach:"Manoranjan",phone:"8197797724",icon:"🏸",days:["Sat","Sun"],times:[{s:"09:00",e:"11:00"}],loc:"Badminton Court",tags:["physical","fitness"],ageMin:5,ageMax:16,
+   kw:["sport","active","badminton","racket","indoor","agility","hand-eye","shuttle","physical","fast"],goals:["physical","sport"],cat:"sport",
+   why:"Fast-paced indoor sport that sharpens reflexes and agility. 2-hour sessions on weekends give kids a solid workout.",
+   prep:["Get a lightweight junior racket","Wear indoor sports shoes","Practice simple rallies at home"]},
+  {id:6,name:"Dance & Movement",coach:"Siddharth",phone:"8763741248",icon:"🕺",days:["Tue","Thu"],times:[{s:"16:45",e:"18:45"}],loc:"Multi Purpose Hall",tags:["creative","physical"],ageMin:3,ageMax:16,
+   rmk:"Also offers weight training 6:45–7:45pm for adults",
+   kw:["dance","creative","movement","expression","perform","stage","grace","rhythm","choreography","active"],goals:["creative","dance","physical"],cat:"dance",
+   why:"Builds creativity, self-expression and physical fitness through dance. Weekday afternoon slot works well after school.",
+   prep:["Wear flexible comfortable clothing","Be open to different dance styles","Practice at home with fun music"]},
+  {id:7,name:"Yoga",coach:"Jagath & Amar",phone:"8136901917",icon:"🧘",days:["Wed","Sat"],times:[{s:"08:00",e:"09:30"}],loc:"Multi Purpose Hall",tags:["physical","mental","fitness"],ageMin:3,ageMax:16,
+   kw:["yoga","calm","flexibility","focus","mindfulness","balance","health","wellness","stretch","relax","mental","peace","discipline"],goals:["physical","mental"],cat:"fitness",
+   why:"Builds flexibility, balance and mental calm. Excellent complement to any high-energy sport — helps with injury prevention too.",
+   prep:["Get a yoga mat","Eat light 30 min before class","Wear stretchable clothes"]},
+  {id:8,name:"Drawing & Art",coach:"Karmaja",phone:"9900003923",icon:"🎨",days:["Mon","Wed"],times:[{s:"16:00",e:"17:00"}],loc:"Multi Purpose Hall",tags:["creative"],ageMin:3,ageMax:16,
+   kw:["draw","art","creative","paint","color","sketch","craft","imagination","design","visual"],goals:["creative"],cat:"creative",
+   why:"Nurtures imagination, fine motor skills and visual thinking. Great for kids of all ages with no prerequisites.",
+   prep:["Get a sketch pad and color pencils","Encourage doodling at home","All levels welcome"]},
+  {id:9,name:"Keyboard",coach:"Karmaja",phone:"9900003923",icon:"🎹",days:["Sat","Sun"],times:[{s:"10:00",e:"12:00"}],loc:"Multi Purpose Hall",tags:["creative","mental"],ageMin:4,ageMax:16,
+   rmk:"Summer: Sat & Sun. From June: 10:30 am–12:30 pm",
+   kw:["keyboard","piano","music","instrument","creative","melody","practice","perform","notes","keys"],goals:["creative","music","mental"],cat:"music",
+   why:"Learning an instrument builds discipline, memory and mathematical thinking. Weekend mornings work well for focused practice.",
+   prep:["A practice keyboard at home helps","Learn note positions (Do Re Mi)","15-min daily practice makes a difference"]},
+  {id:10,name:"Chess",coach:"Prakash",phone:"9972861486",icon:"♟️",days:["Wed"],times:[{s:"17:00",e:"18:30"}],loc:"Games Room",tags:["mental"],ageMin:4,ageMax:16,
+   kw:["chess","strategy","think","brain","logic","puzzle","mind","focus","concentration","smart","problem","solving","intellectual"],goals:["mental"],cat:"mental",
+   why:"Sharpens strategic thinking, patience and problem-solving. Just once a week but incredibly effective for brain development.",
+   prep:["Get a chess board for home","Learn piece names beforehand","Play puzzles to build interest"]},
+  {id:11,name:"Skating",coach:"Rohit",phone:"7367962749",icon:"⛸️",days:["Wed","Sat"],times:[{s:"17:00",e:"18:00"}],loc:"Basketball Court",tags:["physical","fitness"],ageMin:4,ageMax:16,
+   rmk:"Trial basis for 2 months starting April 2026",
+   kw:["skate","skating","active","balance","outdoor","fun","sport","wheels","roller","speed"],goals:["physical","sport"],cat:"sport",
+   why:"Builds balance, coordination and confidence. Fun activity that kids love — trial period lets you try before committing.",
+   prep:["Get roller skates and protective gear","Practice balance exercises","Start on flat smooth surfaces"]},
+  {id:12,name:"Taekwondo",coach:"Dinesh M",phone:"8147862629",icon:"🥋",days:["Fri","Sat"],times:[{s:"17:00",e:"18:00"}],loc:"Multi Purpose Hall",tags:["physical","fitness","mental"],ageMin:4,ageMax:16,
+   kw:["martial","arts","discipline","self-defense","kick","karate","taekwondo","focus","strength","confidence","respect"],goals:["physical","self-defense","mental"],cat:"fitness",
+   why:"Teaches discipline, respect and self-defense. Builds both physical strength and mental focus — great confidence booster.",
+   prep:["Wear comfortable tracksuit","Teach basic stretching at home","Emphasize discipline and respect"]},
+  {id:13,name:"Swimming",coach:"TBA",phone:"",icon:"🏊",days:["Mon","Wed","Sat","Sun"],
+   times:[{s:"15:30",e:"16:30",label:"Batch 1 · Beginners",batch:"b1"},{s:"16:30",e:"17:30",label:"Batch 2 · Beginners",batch:"b2"},{s:"17:30",e:"18:30",label:"Batch 3 · Intermediate",batch:"b3"}],
+   loc:"Swimming Pool",tags:["physical","fitness"],ageMin:3,ageMax:16,temp:true,
+   kw:["swim","swimming","water","pool","active","fitness","stroke","splash"],goals:["physical","sport","water"],cat:"sport",batches:true,
+   why:"Essential life skill and full-body workout. Summer is the perfect time to learn — 3 batches available to suit your level.",
+   prep:["Get a proper swimsuit and swim cap","Goggles recommended for beginners","Shower before entering the pool"]}
+];
+
+// ===== EXTERNAL SUGGESTIONS =====
+const EXT=[
+  {id:101,name:"Cricket Coaching",icon:"🏏",tags:["physical","fitness"],goals:["physical","sport","social"],
+   kw:["cricket","sport","bat","ball","team","outdoor","athletic","bowling","batting"],
+   why:"Cricket academies are widely available along Sarjapur Road. Ask in society WhatsApp groups for coach recommendations.",ageMin:5,ageMax:16},
+  {id:102,name:"Football",icon:"⚽",tags:["physical","fitness"],goals:["physical","sport","social"],
+   kw:["football","soccer","sport","team","kick","goal","outdoor","run"],
+   why:"Several football coaching centres near Sarjapur Road. Weekend sessions on society grounds could be organised.",ageMin:4,ageMax:16},
+  {id:103,name:"Bharatanatyam",icon:"🪷",tags:["creative","physical"],goals:["creative","dance"],
+   kw:["bharatanatyam","classical","dance","indian","tradition","perform","grace"],
+   why:"Classical dance teachers available in the Sarjapur-Dommasandra area. A weekend batch in Multi Purpose Hall could work.",ageMin:4,ageMax:16},
+  {id:104,name:"Carnatic Vocal / Veena",icon:"🎶",tags:["creative"],goals:["creative","music"],
+   kw:["carnatic","veena","classical","indian","music","raga","vocal","instrument"],
+   why:"Many Carnatic music teachers in Bangalore offer home or small-group classes. Online+in-person hybrid options available.",ageMin:4,ageMax:16},
+  {id:105,name:"Coding & Robotics",icon:"🤖",tags:["mental"],goals:["mental"],
+   kw:["coding","programming","robot","robotics","computer","tech","stem","scratch","python","logic"],
+   why:"STEM/coding classes (Scratch, Python, Robotics) are very popular in Bangalore. Local tutors can conduct weekend batches.",ageMin:6,ageMax:16},
+  {id:106,name:"Gymnastics",icon:"🤸",tags:["physical","fitness"],goals:["physical"],
+   kw:["gymnastics","tumble","flip","acrobat","flexibility","balance","athletic"],
+   why:"Gymnastics centres near HSR Layout and Koramangala. Some coaches do weekend sessions at residential societies.",ageMin:3,ageMax:12},
+  {id:107,name:"Tabla / Drums",icon:"🥁",tags:["creative"],goals:["creative","music"],
+   kw:["tabla","drums","percussion","rhythm","beat","music","instrument"],
+   why:"Percussion teachers (tabla & drums) available in Bangalore. A society batch on weekday evenings could work.",ageMin:5,ageMax:16},
+  {id:108,name:"Karate",icon:"🥊",tags:["physical","mental"],goals:["self-defense","physical","mental"],
+   kw:["karate","martial","self-defense","discipline","fight","defense","kick","punch"],
+   why:"Taekwondo is already available in the society. Karate could be an alternative — many dojos near Sarjapur.",ageMin:4,ageMax:16},
+  {id:109,name:"Art & Pottery",icon:"🏺",tags:["creative"],goals:["creative"],
+   kw:["pottery","clay","ceramics","art","craft","sculpt","mold","creative"],
+   why:"Pottery workshops are popular in Bangalore. Weekend pop-up sessions could be arranged at the society.",ageMin:4,ageMax:14},
+  {id:110,name:"Athletics / Track",icon:"🏃",tags:["physical","fitness"],goals:["physical","sport"],
+   kw:["athletics","track","running","sprint","race","jump","throw","speed"],
+   why:"Sports academies near Electronic City and HSR offer kids' athletics. Morning jogs can be organised within the society.",ageMin:5,ageMax:16},
+  {id:111,name:"Table Tennis",icon:"🏓",tags:["physical"],goals:["physical","sport","mental"],
+   kw:["table tennis","ping pong","tt","paddle","indoor","reflex"],
+   why:"NVT SOO has TT facilities! Ask management about organising coaching sessions or a summer league.",ageMin:5,ageMax:16}
+];
+
+// ===== STATE =====
+let planSet=new Set(),formAge=7,selGoals=new Set(),activeFilter='all',openCards=new Set(),swimBatch=null; // 'b1','b2','b3'
+
+// Similar class mappings for smart suggestions
+const SIMILAR={8:[9],9:[8],1:[5,3],5:[1,3],3:[1,5],2:[6],6:[2],4:[9],7:[12],12:[7],11:[1]};
+
+// ===== GOOGLE SHEETS LIVE DATA =====
+function parseCSVRow(row){
+  const result=[];let cell='',inQuotes=false;
+  for(let i=0;i<row.length;i++){
+    const ch=row[i];
+    if(ch==='"'){if(inQuotes&&row[i+1]==='"'){cell+='"';i++}else inQuotes=!inQuotes}
+    else if(ch===','&&!inQuotes){result.push(cell.trim());cell=''}
+    else cell+=ch;
+  }
+  result.push(cell.trim());return result;
+}
+function parseCSV(text){
+  const lines=text.split(/\r?\n/).filter(l=>l.trim());
+  if(lines.length<2)return[];
+  const headers=parseCSVRow(lines[0]);
+  return lines.slice(1).map(line=>{
+    const vals=parseCSVRow(line);
+    const obj={};headers.forEach((h,i)=>obj[h]=vals[i]||'');return obj;
+  });
+}
+function csvToSOC(rows){
+  return rows.filter(r=>r.id&&r.name).map(r=>{
+    // Parse pipe-separated fields
+    const days=(r.days||'').split('|').map(d=>d.trim()).filter(Boolean);
+    // Parse times: "15:30-16:30" or "15:30-16:30:Batch 1 · Beginners:b1" format
+    // Split on | first, then for each slot use regex to extract HH:MM-HH:MM and optional :label:batch
+    const times=(r.times||'').split('|').map(t=>{
+      t=t.trim();if(!t)return null;
+      // Match HH:MM-HH:MM, then optional :label:batch
+      const m=t.match(/^(\d{1,2}:\d{2})\s*-\s*(\d{1,2}:\d{2})(?::(.+):(\w+))?$/);
+      if(!m)return null;
+      const obj={s:m[1],e:m[2]};
+      if(m[3])obj.label=m[3].trim();
+      if(m[4])obj.batch=m[4].trim();
+      return obj;
+    }).filter(Boolean);
+    const tags=(r.tags||'').split('|').map(t=>t.trim()).filter(Boolean);
+    const kw=(r.kw||'').split('|').map(t=>t.trim()).filter(Boolean);
+    const goals=(r.goals||'').split('|').map(t=>t.trim()).filter(Boolean);
+    const prep=(r.prep||'').split('|').map(t=>t.trim()).filter(Boolean);
+    const cls={
+      id:parseInt(r.id),name:r.name,coach:r.coach||'TBA',phone:r.phone||'',
+      icon:r.icon||'📚',days,times,loc:r.loc||'',tags,
+      ageMin:parseInt(r.ageMin)||3,ageMax:parseInt(r.ageMax)||16,
+      kw,goals,cat:r.cat||'sport',why:r.why||'',prep:prep.length?prep:undefined,
+      rmk:r.rmk||undefined
+    };
+    if(r.temp==='true'||r.temp==='yes'||r.temp==='1')cls.temp=true;
+    if(r.batches==='true'||r.batches==='yes'||r.batches==='1')cls.batches=true;
+    return cls;
+  });
+}
+let dataSource='local'; // 'local' or 'sheets'
+let lastFetch=0;
+async function loadFromSheets(showStatus){
+  if(!SHEET_CSV_URL)return false;
+  try{
+    if(showStatus)showDataStatus('loading');
+    const resp=await fetch(SHEET_CSV_URL);
+    if(!resp.ok)throw new Error('HTTP '+resp.status);
+    const text=await resp.text();
+    const rows=parseCSV(text);
+    if(rows.length<3)throw new Error('Too few rows');
+    const parsed=csvToSOC(rows);
+    if(parsed.length>=3){
+      SOC=parsed;dataSource='sheets';lastFetch=Date.now();
+      if(showStatus)showDataStatus('live');
+      return true;
+    }
+  }catch(e){console.warn('Sheet fetch failed:',e);if(showStatus)showDataStatus('offline')}
+  return false;
+}
+function showDataStatus(st){
+  let el=document.getElementById('dataStatus');
+  if(!el){el=document.createElement('div');el.id='dataStatus';
+    el.style.cssText='position:fixed;top:0;left:0;right:0;text-align:center;font-size:11px;font-weight:600;padding:4px 8px;z-index:300;font-family:Inter,sans-serif;transition:all .3s';
+    document.body.prepend(el)}
+  if(st==='loading'){el.style.background='#FFF4E0';el.style.color='#8B7A2E';el.textContent='⏳ Loading latest class data...';el.style.display='block'}
+  else if(st==='live'){el.style.background='#EDFAF2';el.style.color='#2D7A4F';el.textContent='✅ Live data from Google Sheets';el.style.display='block';setTimeout(()=>{el.style.display='none'},3000);const sb=document.getElementById('sheetBadge');if(sb)sb.style.display='block'}
+  else if(st==='offline'){el.style.background='#FDF2F2';el.style.color='#C75050';el.textContent='📱 Using built-in data (offline mode)';el.style.display='block';setTimeout(()=>{el.style.display='none'},4000)}
+  else el.style.display='none';
+}
+// Initial load + periodic refresh
+(async function(){
+  const loaded=await loadFromSheets(true);
+  if(!loaded&&SHEET_CSV_URL)showDataStatus('offline');
+  if(SHEET_CSV_URL)setInterval(()=>loadFromSheets(false),REFRESH_INTERVAL);
+  // Refresh when user returns to tab
+  document.addEventListener('visibilitychange',()=>{if(!document.hidden&&SHEET_CSV_URL&&Date.now()-lastFetch>60000)loadFromSheets(false)});
+})();
+
+// ===== NAVIGATION =====
+function go(m){
+  document.querySelectorAll('.nav-tab').forEach((t,i)=>t.classList.toggle('active',['explore','classes','plan'][i]===m));
+  document.querySelectorAll('.sec').forEach(s=>s.classList.remove('active'));
+  document.getElementById(m).classList.add('active');
+  if(m==='classes') renderClasses();
+  if(m==='plan') renderPlan();
+  updCount();updBB();
+}
+function subTab(m){
+  document.querySelectorAll('.sub-tab').forEach((t,i)=>t.classList.toggle('active',['nlp','form'][i]===m));
+  document.getElementById('nlpMode').style.display=m==='nlp'?'block':'none';
+  document.getElementById('formMode').style.display=m==='form'?'block':'none';
+}
+function fill(t){document.getElementById('ambInput').value=t}
+function togGoal(el){el.classList.toggle('on');const g=el.dataset.g;selGoals.has(g)?selGoals.delete(g):selGoals.add(g)}
+function updCount(){const el=document.getElementById('planCount');if(planSet.size){el.style.display='inline-flex';el.textContent=planSet.size}else el.style.display='none'}
+function addToPlan(id){
+  if(id===13&&!planSet.has(13)){showBatchPicker();return}
+  planSet.has(id)?planSet.delete(id):planSet.add(id);
+  if(id===13&&!planSet.has(13))swimBatch=null;
+  updCount();updBB();syncButtons(id);
+}
+function showBatchPicker(){
+  const m=document.createElement('div');m.id='batchModal';
+  m.style.cssText='position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:200;display:flex;align-items:flex-end;justify-content:center;animation:su .3s ease';
+  m.innerHTML=`<div style="background:var(--w);border-radius:20px 20px 0 0;padding:24px 20px 32px;width:100%;max-width:480px">
+    <div class="cl">Swimming</div><div class="ct" style="margin-bottom:4px">Choose your batch</div>
+    <p style="font-size:12px;color:var(--tl);margin-bottom:16px">🏊 April–May only (2 months). Beginners cannot join the intermediate batch.</p>
+    <div onclick="pickBatch('b1')" style="padding:14px;border:2px solid var(--bdr);border-radius:12px;margin-bottom:8px;cursor:pointer;transition:all .2s" onmousedown="this.style.borderColor='var(--g)'">
+      <div style="font-weight:700;font-size:14px">Batch 1 · Beginners</div>
+      <div style="font-size:12px;color:var(--tl);margin-top:2px">3:30 PM – 4:30 PM · Mon, Wed, Sat, Sun</div>
+    </div>
+    <div onclick="pickBatch('b2')" style="padding:14px;border:2px solid var(--bdr);border-radius:12px;margin-bottom:8px;cursor:pointer;transition:all .2s" onmousedown="this.style.borderColor='var(--g)'">
+      <div style="font-weight:700;font-size:14px">Batch 2 · Beginners</div>
+      <div style="font-size:12px;color:var(--tl);margin-top:2px">4:30 PM – 5:30 PM · Mon, Wed, Sat, Sun</div>
+    </div>
+    <div onclick="pickBatch('b3')" style="padding:14px;border:2px solid var(--bdr);border-radius:12px;margin-bottom:8px;cursor:pointer;transition:all .2s" onmousedown="this.style.borderColor='var(--g)'">
+      <div style="font-weight:700;font-size:14px">Batch 3 · Intermediate</div>
+      <div style="font-size:12px;color:var(--tl);margin-top:2px">5:30 PM – 6:30 PM · Mon, Wed, Sat, Sun</div>
+    </div>
+    <button class="btn btn-o" style="margin-top:8px" onclick="closeBatchModal()">Cancel</button>
+  </div>`;
+  m.addEventListener('click',e=>{if(e.target===m)closeBatchModal()});
+  document.body.appendChild(m);
+}
+function pickBatch(b){swimBatch=b;planSet.add(13);updCount();updBB();syncButtons(13);closeBatchModal()}
+function closeBatchModal(){const m=document.getElementById('batchModal');if(m)m.remove()}
+function syncButtons(id){
+  const inPlan=planSet.has(id);
+  document.querySelectorAll(`[data-pid="${id}"]`).forEach(b=>{b.classList.toggle('added',inPlan);b.textContent=inPlan?'✓ In Plan':'+ Plan'});
+  document.querySelectorAll(`.add-plan[data-id="${id}"]`).forEach(b=>{b.classList.toggle('added',inPlan);b.innerHTML=inPlan?'✓ Added to Plan':'+ Add to Plan'});
+}
+function updBB(){
+  const bar=document.getElementById('bottomBar'),ch=SOC.filter(c=>planSet.has(c.id));
+  if(ch.length){bar.classList.add('show');document.getElementById('bbInfo').innerHTML=`<strong>${ch.length}</strong> class${ch.length>1?'es':''} in plan`}else bar.classList.remove('show');
+}
+
+// ===== TIME =====
+function fmt(t){const[h,m]=t.split(':').map(Number);return`${h%12||12}:${m.toString().padStart(2,'0')} ${h>=12?'PM':'AM'}`}
+function toMin(t){const[h,m]=t.split(':').map(Number);return h*60+m}
+
+// ===== CLASSES TAB =====
+const CATS=[{k:'all',l:'All'},{k:'sport',l:'🏅 Sport'},{k:'dance',l:'💃 Dance'},{k:'music',l:'🎵 Music'},{k:'creative',l:'🎨 Art'},{k:'mental',l:'🧠 Mind'},{k:'fitness',l:'💪 Fitness'}];
+
+function renderClasses(){
+  document.getElementById('filterBar').innerHTML=CATS.map(c=>`<span class="fp ${activeFilter===c.k?'on':''}" onclick="setFilter('${c.k}')">${c.l}</span>`).join('');
+  const filtered=activeFilter==='all'?SOC:SOC.filter(c=>c.cat===activeFilter||c.tags.includes(activeFilter));
+  document.getElementById('classCount').innerHTML=`Showing <strong>${filtered.length}</strong> of ${SOC.length} classes`;
+  document.getElementById('classList').innerHTML=filtered.map(c=>{
+    const ts=c.batches?c.times.length+' batches':c.times.map(t=>fmt(t.s)+'–'+fmt(t.e)).join(' & ');
+    const isOpen=openCards.has(c.id);
+    return`<div class="bc ${isOpen?'open':''}" id="bc${c.id}">
+      <div class="bc-head" onclick="togCard(${c.id})">
+        <div class="bci">${c.icon}</div>
+        <div class="bcn"><h4>${c.name}${c.temp?' <span style="font-size:10px;color:#C07A30">⏳ 2mo</span>':''}</h4><div class="bcs">${c.days.join(', ')} · ${ts}</div></div>
+        <button class="bca ${planSet.has(c.id)?'added':''}" data-pid="${c.id}" onclick="event.stopPropagation();addToPlan(${c.id})">${planSet.has(c.id)?'✓ In Plan':'+ Plan'}</button>
+      </div>
+      <div class="bc-body">
+        <div class="bc-row"><span class="bc-icon">👨‍🏫</span> Coach ${c.coach||'TBA'}</div>
+        ${c.phone?`<div class="bc-row"><span class="bc-icon">📞</span> <a href="tel:${c.phone}" style="color:var(--g);text-decoration:none;font-weight:600">${c.phone}</a></div>`:''}
+        <div class="bc-row"><span class="bc-icon">📍</span> ${c.loc}</div>
+        <div class="bc-row"><span class="bc-icon">👶</span> Ages ${c.ageMin}–${c.ageMax}</div>
+        ${c.batches?`<div class="bc-batches">${c.times.map(t=>`<div class="bc-batch"><span class="bb-time">${fmt(t.s)}–${fmt(t.e)}</span><span class="bb-label">${t.label||''}</span></div>`).join('')}</div>`
+        :`<div class="bc-row"><span class="bc-icon">⏰</span> ${c.times.map(t=>fmt(t.s)+'–'+fmt(t.e)).join(' & ')}</div>`}
+        <div style="margin-top:6px">${c.tags.map(t=>`<span class="tg tg-${t}">${t}</span>`).join('')}</div>
+        ${c.rmk?`<div class="rmk">ℹ️ ${c.rmk}</div>`:''}
+      </div>
+    </div>`;
+  }).join('');
+}
+function setFilter(f){activeFilter=f;renderClasses()}
+function togCard(id){openCards.has(id)?openCards.delete(id):openCards.add(id);renderClasses()}
+
+// ===== AMBITION PROFILES =====
+// Deep strategic reasoning for different parent ambitions
+const AMBITIONS=[
+  { id:'college',
+    detect:['college','university','ivy','admission','application','ib','igcse','cbse','board','abroad','us','uk','usa','scholarship','resume','profile','extracurricular','extra-curricular','cas','sat','well-rounded','holistic','admit'],
+    label:'🎓 College & Admissions Profile',
+    advice:{
+      // classId → {boost, reason} — strategic reasoning per class for this ambition
+      13:{boost:12,reason:"Swimming on a college app signals discipline, individual commitment, and physical wellness. US colleges value athletes who train consistently — even non-varsity swimmers stand out. IB CAS Activity + Service if you volunteer at swim events."},
+      10:{boost:14,reason:"Chess is gold for college applications. It demonstrates strategic thinking, intellectual curiosity, and competitive achievement. If your child reaches a state/national rating, it's a major differentiator — especially for STEM-focused universities."},
+      9:{boost:11,reason:"Keyboard/Piano is one of the most valued musical instruments on college applications. Grade exams (Trinity/ABRSM) provide measurable milestones. Music + academics signals a well-rounded applicant that admissions officers love."},
+      4:{boost:10,reason:"Vocal training builds stage confidence and performance skills. US colleges value performing arts — school choir, solo performances, or music competitions all become strong extracurricular entries on applications."},
+      8:{boost:9,reason:"Visual arts build a portfolio that can directly support college applications. Art competitions, exhibitions, and a strong portfolio can qualify for art scholarships even at non-art schools. Counts as IB CAS Creativity."},
+      12:{boost:8,reason:"Martial arts (Taekwondo) demonstrates discipline, perseverance and self-improvement. Belt progression gives concrete milestones. A black belt on a college app is a strong signal of long-term commitment — admissions love that."},
+      7:{boost:7,reason:"Yoga shows mindfulness and holistic development — increasingly valued by colleges focused on student wellness. If your child can teach yoga to others, it becomes CAS Service + Activity. Unique differentiator vs common sports."},
+      1:{boost:6,reason:"Team sports like basketball show collaboration, leadership, and competitive spirit. If your child captains a school team, it's a strong leadership signal for college applications."},
+      3:{boost:6,reason:"Tennis is an individual sport valued by US colleges — many offer tennis scholarships. Regular tournament participation builds a competitive profile. USTA ratings or national rankings are powerful application boosters."},
+      5:{boost:5,reason:"Badminton is popular in Asia but less common in US college apps — which can actually make it distinctive. If your child competes nationally, it stands out as a unique sport to admissions committees."},
+      6:{boost:7,reason:"Dance demonstrates creativity, discipline, and cultural awareness. Performances and choreography can be showcased in application portfolios. Bharatanatyam or contemporary dance are particularly valued for cultural depth."},
+      2:{boost:4,reason:"Zumba builds fitness and rhythm. While not a traditional competitive activity, it shows an active lifestyle. Consider combining with a more structured sport for a stronger application profile."},
+      11:{boost:5,reason:"Skating is a niche sport — fewer competitors means faster path to regional/national recognition. If your child picks it up quickly this summer, it could become a unique differentiator on applications."},
+      // External
+      101:{boost:8,reason:"Cricket is huge in India but rare in the US — a nationally-ranked cricket player is extremely distinctive on US college applications. Some US universities now have cricket clubs and are actively recruiting."},
+      102:{boost:7,reason:"Football (soccer) is the most popular sport in US colleges with significant scholarship opportunities. Club-level play and tournament experience build a strong athletic profile."},
+      105:{boost:13,reason:"Coding & robotics is the #1 extracurricular for STEM college admissions. Hackathon wins, robotics competitions (FRC, VEX), or published projects are massive application boosters. Start early to build competition-ready skills."},
+      103:{boost:8,reason:"Classical Indian dance (Bharatanatyam) shows deep cultural engagement and artistic discipline. Arangetram is a significant milestone that colleges recognize as equivalent to a senior recital."},
+      104:{boost:7,reason:"Indian classical music demonstrates cultural depth and sustained dedication. Grade certifications and concert performances add concrete achievements to applications."},
+      106:{boost:6,reason:"Gymnastics builds extraordinary body control and discipline. Even recreational-level gymnastics shows physical commitment. Competitive gymnasts are highly valued by US college programs."},
+      107:{boost:6,reason:"Percussion skills (tabla/drums) are valued in school bands and music programs. Demonstrates rhythm, coordination, and cultural appreciation — strong for performing arts applications."},
+      108:{boost:7,reason:"Karate belt progression demonstrates long-term commitment and discipline. Black belt holders stand out on applications. Self-defense + discipline narrative resonates well with admissions essays."},
+      110:{boost:5,reason:"Track & athletics provide measurable achievements (times, distances). If your child can compete at district/state level, it adds a strong competitive sports dimension to applications."},
+      111:{boost:5,reason:"Table tennis shows quick reflexes and competitive spirit. National-level TT players from India are rare in US college applicant pools — that rarity is an advantage."}
+    }
+  },
+  { id:'national',
+    detect:['national','state','represent','competitive','compete','champion','medal','professional','pro','career','olympics','elite','serious','rank','ranking','district','tournament','selection','trials','team india','top','best'],
+    label:'🏆 Competitive / National Level',
+    advice:{
+      13:{boost:10,reason:"Swimming has a clear competitive pathway in India — SAI selections, state championships, national meets. Starting at 5-8 years is ideal. Summer intensive training builds stroke technique that's hard to develop later."},
+      10:{boost:14,reason:"Chess has the clearest path to national recognition in India. FIDE ratings, state championships, and national tournaments are well-structured. India produces world-class chess players — the ecosystem is strong. Start NOW."},
+      12:{boost:11,reason:"Taekwondo has a well-defined belt system and national competition circuit. India's Olympic push in martial arts means more funding and recognition. Black belt → state → national selections is a proven path."},
+      11:{boost:10,reason:"Skating has very low competition in India — your child can reach national level much faster than in crowded sports like cricket or badminton. National skating championships have fewer participants, meaning quicker recognition."},
+      3:{boost:9,reason:"Tennis has a strong junior circuit (AITA rankings). Starting at 5-7 is crucial. The path is expensive but clear: academy → district → state → nationals. India needs more tennis talent after the current generation."},
+      1:{boost:7,reason:"Basketball is growing rapidly in India with NBA Academy programs. Less competition than cricket means your child can stand out faster. Height + early training gives a significant advantage."},
+      5:{boost:8,reason:"Badminton is India's strongest racket sport with PBL, national championships, and Olympic representation. The competitive ecosystem is excellent. If your child shows talent, Bangalore has top academies (Prakash Padukone's academy)."},
+      9:{boost:6,reason:"Keyboard proficiency opens doors to music competitions — Trinity/ABRSM grades, state-level competitions. India has a growing competitive music scene, but it's less about 'national team' and more about grading milestones."},
+      7:{boost:4,reason:"Yoga competitions exist (national yoga championships) but are niche. More valuable as a complementary discipline that prevents injuries and builds flexibility for competitive athletes."},
+      13:{boost:10,reason:"Swimming is one of the easier paths to state/national medals in India — the talent pool is smaller than cricket or badminton. Summer training builds the foundation, then year-round coaching takes them competitive."},
+      101:{boost:12,reason:"Cricket is India's #1 competitive sport but extremely crowded. To go national, your child needs to start by age 8, join a reputed academy (KSCA in Bangalore), and show exceptional talent early. High reward but very high competition."},
+      102:{boost:8,reason:"Football is growing fast in India with ISL and I-League pathways. Bangalore has strong youth football programs. Less competition than cricket means faster recognition at district/state level."},
+      106:{boost:9,reason:"Gymnastics offers national-level competitions with relatively fewer participants in India. Starting young (3-6) is critical. Bangalore has a few dedicated gymnastics academies — the early bird advantage is huge."},
+      108:{boost:10,reason:"Karate has a strong national and international competition circuit. India's martial arts federation is active. Belt progression + tournament wins = clear path to national representation. Fewer competitors than mainstream sports."},
+      110:{boost:8,reason:"Athletics/Track is the foundation of all sports. If your child is naturally fast, district → state → national meets are well-organized. SAI (Sports Authority of India) actively scouts young athletes."},
+      111:{boost:9,reason:"Table tennis has a growing competitive scene in India, with TT leagues and national championships. India has produced international-level players. The competition pool is smaller than cricket, making national level more achievable."}
+    }
+  },
+  { id:'health',
+    detect:['health','fitness','active','energy','overweight','screen','screentime','screen time','obesity','lazy','indoor','sedentary','exercise','stamina','strength','weight','posture'],
+    label:'💪 Fitness & Active Lifestyle',
+    advice:{
+      13:{boost:12,reason:"Swimming is the best full-body workout for kids — builds cardiovascular fitness, muscle tone, and flexibility without joint stress. Summer is perfect to build a swimming habit that lasts. Non-competitive swimming is equally valuable."},
+      2:{boost:10,reason:"Zumba is the easiest entry point for kids who aren't into traditional sports. It doesn't feel like exercise — it's dancing to fun music. 2 sessions/week significantly reduces screen time and builds a movement habit."},
+      7:{boost:11,reason:"Yoga builds flexibility, posture, and body awareness from an early age. It's the antidote to hours of sitting — corrects posture, strengthens core, and teaches kids to be mindful of their body."},
+      1:{boost:8,reason:"Basketball is high-intensity cardio that builds stamina, coordination, and social skills. Weekend mornings get kids outdoors early. Team sports create accountability — kids show up because friends are counting on them."},
+      6:{boost:9,reason:"Dance combines cardio with creativity. 2-hour sessions burn serious energy. Kids who resist 'exercise' often love dance because it's expressive and fun — it builds fitness without feeling like a chore."},
+      12:{boost:9,reason:"Taekwondo builds strength, flexibility, and discipline. The structured belt system gives kids goals to work toward. It's one of the best martial arts for overall fitness — full-body workout every session."},
+      5:{boost:8,reason:"Badminton is one of the most physically demanding racket sports — builds agility, reflexes, and stamina. 2-hour weekend sessions are an excellent workout. Great for kids who prefer individual performance over team sports."},
+      3:{boost:7,reason:"Tennis builds explosive power, agility, and endurance. Regular practice improves hand-eye coordination dramatically. The physical demands keep kids fit while learning a lifelong sport."},
+      11:{boost:8,reason:"Skating is excellent cardio that builds balance and leg strength. Kids love it because it feels like play, not exercise. The trial period is perfect to test if your child enjoys it before committing."},
+      110:{boost:10,reason:"Running and athletics are the foundation of all physical fitness. If your child has energy to burn, track events channel it productively. Morning runs also improve sleep patterns and reduce screen time."}
+    }
+  },
+  { id:'creative',
+    detect:['creative','artist','art','music','imagination','express','culture','cultural','aesthetic','design','perform','stage','dance','sing','paint','draw','craft'],
+    label:'🎨 Creative & Artistic Development',
+    advice:{
+      8:{boost:13,reason:"Drawing & Art is foundational for visual creativity. It trains observation, patience, and imagination. Kids who draw regularly develop stronger visual-spatial intelligence — useful in design, architecture, engineering, and more."},
+      9:{boost:12,reason:"Keyboard builds musical understanding from the ground up — melody, harmony, rhythm. It's the most versatile instrument for composition. Trinity/ABRSM grades provide measurable progress and recognized certifications."},
+      4:{boost:11,reason:"Vocal training develops ear training, pitch accuracy, and confidence. A child who sings well can perform at school events, competitions, and cultural programs. It's the most accessible musical skill — no instrument needed."},
+      6:{boost:12,reason:"Dance & Movement is where physical expression meets creativity. It builds grace, rhythm, and stage confidence. Kids who dance develop better body language and presentation skills that help in every area of life."},
+      2:{boost:7,reason:"Zumba introduces rhythm and movement in a fun, low-pressure way. It's a great gateway to more structured dance forms — kids who enjoy Zumba often transition naturally to dance classes."},
+      103:{boost:11,reason:"Bharatanatyam is a deeply cultural art form that teaches discipline, storytelling, and grace. The Arangetram milestone is a significant life achievement. Connects your child to Indian heritage through performance art."},
+      104:{boost:10,reason:"Carnatic music is one of the world's most complex musical traditions. Learning it develops exceptional ear training and musical theory understanding. Annual concerts and competitions provide performance opportunities."},
+      107:{boost:9,reason:"Tabla/Drums build extraordinary rhythm sense and hand coordination. Percussion is valued in every musical tradition. Kids who learn rhythm instruments often become the backbone of school bands and musical ensembles."},
+      109:{boost:10,reason:"Pottery and clay work develop tactile creativity and 3D spatial thinking. It's meditative, builds patience, and produces tangible results that kids can be proud of. Increasingly popular as a creative outlet."}
+    }
+  },
+  { id:'discipline',
+    detect:['discipline','focus','concentration','attention','adhd','hyperactive','calm','patience','control','self-control','behavior','behaviour','mindful','meditat','temper','anger','regulate','sit still','restless'],
+    label:'🧘 Focus, Discipline & Calm',
+    advice:{
+      10:{boost:14,reason:"Chess is the #1 activity for building focus and concentration. Kids learn to think before acting, consider consequences, and sustain attention for long periods. Studies show chess-playing kids perform better academically."},
+      7:{boost:13,reason:"Yoga is scientifically proven to improve focus, reduce anxiety, and teach emotional regulation. Breathing techniques (pranayama) give kids tools to calm themselves. The mindfulness aspect helps with attention and self-control."},
+      12:{boost:11,reason:"Martial arts teach discipline through structure — bowing, forms, belt progression. The 'respect' culture in Taekwondo directly addresses behavioral challenges. Kids learn to control their body and emotions simultaneously."},
+      9:{boost:10,reason:"Learning keyboard requires sustained concentration — reading notes, coordinating both hands, maintaining rhythm. Regular practice builds the habit of focused, deliberate effort. It's meditation through music."},
+      13:{boost:8,reason:"Swimming requires rhythmic breathing and stroke counting — it's inherently meditative. The repetitive nature builds patience and body awareness. Many therapists recommend swimming for kids with attention challenges."},
+      8:{boost:9,reason:"Drawing and art demand careful observation and patience. Kids learn to slow down, look closely, and work deliberately. Art therapy is a recognized approach for emotional regulation and self-expression."},
+      4:{boost:7,reason:"Vocal training requires listening carefully, controlling breath, and maintaining pitch — all exercises in concentration. Group singing also teaches kids to coordinate with others and follow instructions precisely."},
+      108:{boost:10,reason:"Karate's kata (forms) practice is essentially moving meditation. The strict etiquette and respect-based culture directly builds self-discipline. Many parents see behavioral improvements within weeks of starting martial arts."}
+    }
+  },
+  { id:'social',
+    detect:['friend','social','shy','introvert','team','group','confidence','interact','community','lonely','alone','mix','mingle','communicate','new school','making friends','playground'],
+    label:'👫 Social Skills & Confidence',
+    advice:{
+      1:{boost:12,reason:"Basketball is a team sport where kids must communicate, coordinate, and support each other. Weekend sessions with society kids build lasting friendships. Team sports naturally break shyness — you have to call for the ball!"},
+      2:{boost:10,reason:"Zumba in a group setting is incredibly social — everyone's moving together, laughing at mistakes, and cheering each other on. It's the lowest-pressure way to build comfort in a group setting."},
+      6:{boost:11,reason:"Dance builds confidence through performance. Kids learn to express themselves, perform in front of others, and work in groups. The progression from shy kid to confident performer happens naturally through dance training."},
+      13:{boost:8,reason:"Swimming in batches means your child trains alongside others at the same level. Shared challenges (learning to float, first full lap) create bonding moments. Pool time is inherently social and fun."},
+      5:{boost:7,reason:"Badminton (doubles) and court-sharing build natural social interaction. Weekend sports sessions at the society are where many kids form their closest friendships."},
+      11:{boost:8,reason:"Skating is social by nature — kids learn together, fall together, and cheer each other on. The shared experience of mastering balance creates strong peer bonds. Society skating sessions become a social highlight."},
+      101:{boost:10,reason:"Cricket is India's ultimate social sport — it teaches teamwork, communication, and handling pressure in front of peers. Every kid in the society speaks cricket. It's the fastest way to build friendships."},
+      102:{boost:9,reason:"Football is the world's most social sport. Team dynamics, passing, and strategy require constant communication. Kids who play football together form some of the strongest childhood friendships."}
+    }
+  }
+];
+
+// ===== SCORING =====
+function detectAmbitions(text){
+  text=text.toLowerCase();
+  const matched=[];
+  AMBITIONS.forEach(a=>{
+    let hits=0;
+    a.detect.forEach(d=>{if(text.includes(d))hits++});
+    if(hits>0)matched.push({...a,hits});
+  });
+  matched.sort((a,b)=>b.hits-a.hits);
+  return matched;
+}
+
+function scoreNLP(text){
+  text=text.toLowerCase();
+  const ambitions=detectAmbitions(text);
+  const primaryAmbition=ambitions[0]||null;
+
+  return[...SOC.map(c=>({...c,avail:true})),...EXT.map(c=>({...c,avail:false}))].map(c=>{
+    let sc=0;
+    // Basic keyword matching (reduced weight)
+    (c.kw||[]).forEach(k=>{if(text.includes(k))sc+=1});
+    text.split(/\s+/).forEach(w=>{if(w.length>3&&c.name.toLowerCase().includes(w))sc+=2});
+
+    // Ambition-based scoring (heavy weight)
+    let ambWhy=null;
+    if(primaryAmbition){
+      const aAdvice=primaryAmbition.advice[c.id];
+      if(aAdvice){sc+=aAdvice.boost;ambWhy=aAdvice.reason}
+      else{sc+=1} // small base score so unmatched classes still appear if keyword-matched
+    }
+
+    // Secondary ambition bonus (smaller)
+    if(ambitions.length>1){
+      const secAdvice=ambitions[1].advice[c.id];
+      if(secAdvice)sc+=Math.floor(secAdvice.boost*0.3);
+    }
+
+    // Tag-based matching (fallback for no ambition detected)
+    if(!primaryAmbition){
+      (c.kw||[]).forEach(k=>{if(text.includes(k))sc+=1}); // extra kw weight when no ambition
+      if((text.includes('active')||text.includes('sport')||text.includes('physical')||text.includes('energy'))&&c.tags.includes('physical'))sc+=2;
+      if((text.includes('creative')||text.includes('art')||text.includes('music'))&&c.tags.includes('creative'))sc+=2;
+      if((text.includes('focus')||text.includes('brain')||text.includes('think')||text.includes('discipline'))&&c.tags.includes('mental'))sc+=2;
+      if((text.includes('swim')||text.includes('water'))&&(c.kw||[]).some(k=>['swim','swimming','water'].includes(k)))sc+=4;
+    }
+
+    return{...c,score:sc,ambWhy,ambLabel:primaryAmbition?primaryAmbition.label:null};
+  }).filter(c=>c.score>0).sort((a,b)=>b.score-a.score);
+}
+
+function scoreForm(age,goals){
+  return[...SOC.map(c=>({...c,avail:true})),...EXT.map(c=>({...c,avail:false}))].map(c=>{
+    let sc=0;if(age>=c.ageMin&&age<=c.ageMax)sc+=2;else return{...c,score:0};
+    (c.goals||[]).forEach(g=>{if(goals.has(g))sc+=3});
+    return{...c,score:sc,ambWhy:null,ambLabel:null};
+  }).filter(c=>c.score>0).sort((a,b)=>b.score-a.score);
+}
+
+// ===== RENDER EXPLORE RESULTS =====
+function renderResults(results,ctr){
+  if(!results.length){document.getElementById(ctr).innerHTML=`<div class="empty"><div class="eico">🤔</div><p>No matches found. Try describing what you want for your child!</p></div>`;return}
+  const avail=results.filter(r=>r.avail),ext=results.filter(r=>!r.avail);
+  const ambLabel=results[0]?.ambLabel;
+  let h='';
+
+  // Show detected ambition header
+  if(ambLabel){
+    h+=`<div style="padding:14px 16px;background:linear-gradient(135deg,#2D5A3D,#4A7C59);border-radius:var(--rs);margin-bottom:14px;color:#fff">
+      <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1px;opacity:.8;margin-bottom:4px">Recommendations tailored for</div>
+      <div style="font-family:'Playfair Display',serif;font-size:17px;font-weight:600">${ambLabel}</div>
+    </div>`;
+  }
+
+  if(avail.length){
+    h+=`<div class="dv">Available in Society</div>`;
+    avail.slice(0,8).forEach((c,i)=>{
+      const tsShort=c.batches?c.times.length+' batches available':c.times.map(t=>fmt(t.s)+'–'+fmt(t.e)).join(' & ');
+      h+=`<div class="rc">${i===0?'<div class="rb avail">TOP PICK</div>':''}
+        <div class="rh"><div class="ri">${c.icon}</div><div><h3>${c.name}</h3><div class="co">Coach ${c.coach||'TBA'}</div></div></div>
+        ${c.ambWhy?`<div style="font-size:13px;color:var(--t);margin-bottom:10px;line-height:1.6;padding:10px 12px;background:linear-gradient(135deg,var(--gold-l),#FFF);border-radius:10px;border-left:3px solid var(--gold)">
+          <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:var(--gold);margin-bottom:4px">Why this matters</div>
+          ${c.ambWhy}</div>`
+        :c.why?`<p style="font-size:13px;color:var(--tm);margin-bottom:10px;line-height:1.5">💬 <em>${c.why}</em></p>`:''}
+        ${c.temp?`<div style="display:inline-flex;align-items:center;gap:4px;padding:4px 10px;background:#FFF4E0;border-radius:8px;font-size:11px;font-weight:600;color:#C07A30;margin-bottom:8px">⏳ April–May only (2 months)</div>`:''}
+        <div class="mr"><span class="mp">📅 ${c.days.join(' & ')}</span><span class="mp">⏰ ${tsShort}</span><span class="mp">📍 ${c.loc}</span></div>
+        ${c.batches?`<div style="margin-bottom:8px">${c.times.map(t=>`<div class="bc-batch"><span class="bb-time">${fmt(t.s)}–${fmt(t.e)}</span><span class="bb-label">${t.label||''}</span></div>`).join('')}</div>`:''}
+        <div>${c.tags.map(t=>`<span class="tg tg-${t}">${t}</span>`).join('')}</div>
+        ${c.rmk?`<div class="rmk">ℹ️ ${c.rmk}</div>`:''}
+        ${c.phone?`<a href="tel:${c.phone}" class="cp">📞 ${c.phone}</a>`:''}
+        <button class="add-plan ${planSet.has(c.id)?'added':''}" data-id="${c.id}" onclick="addToPlan(${c.id})">
+          ${planSet.has(c.id)?'✓ Added to Plan':'+ Add to Plan'}</button>
+        ${c.prep?`<div class="prep-s"><h5>How to Prepare</h5>${c.prep.map(p=>`<div class="pi"><div class="dt"></div><p>${p}</p></div>`).join('')}</div>`:''}
+      </div>`;
+    });
+  }
+  if(ext.length){
+    h+=`<div class="dv">Not in Society — Worth Exploring</div>`;
+    ext.slice(0,5).forEach(c=>{
+      h+=`<div class="rc external"><div class="rb">SUGGESTION</div>
+        <div class="rh"><div class="ri">${c.icon}</div><div><h3>${c.name}</h3><div class="co">Not currently in NVT SOO</div></div></div>
+        <div>${c.tags.map(t=>`<span class="tg tg-${t}">${t}</span>`).join('')}</div>
+        ${c.ambWhy?`<div style="font-size:12px;color:var(--t);margin:8px 0;line-height:1.6;padding:10px 12px;background:linear-gradient(135deg,var(--gold-l),#FFFDF5);border-radius:10px;border-left:3px solid var(--gold)">
+          <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:var(--gold);margin-bottom:4px">Why this matters</div>
+          ${c.ambWhy}</div>`
+        :`<div class="ext-badge">💡 ${c.why||''}</div>`}
+      </div>`;
+    });
+  }
+  document.getElementById(ctr).innerHTML=h;
+}
+function exploreNLP(){const t=document.getElementById('ambInput').value;if(!t.trim())return;renderResults(scoreNLP(t),'exRes')}
+function exploreForm(){if(!selGoals.size){document.getElementById('exRes').innerHTML=`<div class="empty"><div class="eico">👆</div><p>Select at least one goal</p></div>`;return}renderResults(scoreForm(formAge,selGoals),'exRes')}
+
+// ===== PLAN =====
+// Get effective class list with swimming filtered to selected batch
+function getEffective(){
+  return SOC.filter(c=>planSet.has(c.id)).map(c=>{
+    if(c.id===13&&swimBatch){
+      const bt=c.times.find(t=>t.batch===swimBatch);
+      return{...c,times:bt?[bt]:c.times.slice(0,1)};
+    }
+    return c;
+  });
+}
+
+function renderPlan(){
+  const list=document.getElementById('planList'),empty=document.getElementById('planEmpty');
+  if(!planSet.size){list.innerHTML='';empty.style.display='block';document.getElementById('planRes').innerHTML='';updBB();return}
+  empty.style.display='none';
+  const chosen=getEffective();
+  list.innerHTML=chosen.map(c=>{
+    const isSwim=c.id===13;
+    const batchLabel=isSwim&&swimBatch?c.times[0].label:'';
+    const ts=isSwim?batchLabel:c.times.map(t=>fmt(t.s)+'–'+fmt(t.e)).join(' & ');
+    return`<div class="pc-card"><div class="pci">${c.icon}</div><div class="pcn"><h5>${c.name}${c.temp?' <span style="font-size:10px;color:#C07A30;font-weight:600">⏳ 2 months</span>':''}</h5><p>${c.days.join(', ')} · ${ts}</p></div>
+    ${isSwim?`<button class="btn-xs btn-o" style="margin-right:6px;padding:5px 10px;font-size:10px" onclick="showBatchPicker()">Switch</button>`:''}
+    <button class="pcx" onclick="removePlan(${c.id})">✕</button></div>`;
+  }).join('');
+  const clashes=findClashes(chosen);
+  let h='';
+  if(!clashes.length) h+=`<div class="al al-g"><h4>✅ No Clashes</h4><p>All ${chosen.length} classes fit perfectly. Download your April–May calendar below!</p></div>`;
+  else{
+    h+=`<div class="al al-r"><h4>⚠️ ${clashes.length} Clash${clashes.length>1?'es':''}</h4>`;
+    clashes.forEach(cl=>h+=`<p>🔴 <strong>${cl.a.name}</strong> vs <strong>${cl.b.name}</strong> on <strong>${cl.day}</strong> (${fmt(cl.os)}–${fmt(cl.oe)})</p>`);
+    h+=`</div>`;
+    const sugs=genSuggestions(clashes,chosen);
+    if(sugs.length){h+=`<div class="sug-c"><h4>💡 Suggested Fixes</h4>`;sugs.forEach(s=>h+=`<p>${s}</p>`);h+=`</div>`}
+  }
+  h+=weekHTML(chosen);
+  document.getElementById('planRes').innerHTML=h;updBB();
+}
+function removePlan(id){planSet.delete(id);if(id===13)swimBatch=null;updCount();renderPlan();syncButtons(id)}
+
+// ===== CLASH =====
+function findClashes(ch){
+  const out=[];
+  for(let i=0;i<ch.length;i++)for(let j=i+1;j<ch.length;j++){
+    const a=ch[i],b=ch[j];
+    a.days.filter(d=>b.days.includes(d)).forEach(day=>{
+      a.times.forEach(at=>{b.times.forEach(bt=>{
+        const aS=toMin(at.s),aE=toMin(at.e),bS=toMin(bt.s),bE=toMin(bt.e);
+        if(aS<bE&&bS<aE){const os=Math.max(aS,bS),oe=Math.min(aE,bE);const p=n=>`${Math.floor(n/60).toString().padStart(2,'0')}:${(n%60).toString().padStart(2,'0')}`;out.push({a,b,day,as:at,bs:bt,os:p(os),oe:p(oe)})}
+      })});
+    });
+  }
+  return out;
+}
+function genSuggestions(clashes,chosen){
+  const out=[],seen=new Set();
+  // Count how many clashes each class is involved in
+  const clashCount={};
+  clashes.forEach(cl=>{clashCount[cl.a.id]=(clashCount[cl.a.id]||0)+1;clashCount[cl.b.id]=(clashCount[cl.b.id]||0)+1});
+
+  clashes.forEach(cl=>{
+    const k=cl.a.id+'-'+cl.b.id;if(seen.has(k))return;seen.add(k);
+    const aIsTemp=cl.a.temp,bIsTemp=cl.b.temp;
+    const aIsSwim=cl.a.id===13,bIsSwim=cl.b.id===13;
+    const other=aIsSwim?cl.b:bIsSwim?cl.a:null;
+    const nonSwim=aIsSwim?cl.b:cl.a;
+    const swimClass=aIsSwim?cl.a:bIsSwim?cl.b:null;
+
+    // If swimming clashes with another class, suggest pausing the other class for 2 months
+    if(swimClass&&other){
+      const simIds=SIMILAR[other.id]||[];
+      const simAvail=simIds.map(id=>SOC.find(c=>c.id===id)).filter(Boolean).filter(s=>!planSet.has(s.id));
+      let sug=`🏊 <strong>${other.name}</strong> clashes with <strong>Swimming</strong> on ${cl.day}. Consider pausing ${other.name} for April–May (swimming is only 2 months) and resuming from June.`;
+      if(simAvail.length){
+        sug+=` In the meantime, <strong>${simAvail[0].name}</strong> (${simAvail[0].days.join(' & ')}) serves a similar purpose and doesn't clash.`;
+      }
+      out.push(sug);return;
+    }
+
+    // Non-swimming clashes: try alternate time slots first
+    if(cl.a.times.length>1&&!cl.a.batches){const alt=cl.a.times.find(t=>t.s!==cl.as.s);if(alt){out.push(`➡️ Switch <strong>${cl.a.name}</strong> to the ${fmt(alt.s)}–${fmt(alt.e)} slot on ${cl.day} to avoid overlap.`);return}}
+    if(cl.b.times.length>1&&!cl.b.batches){const alt=cl.b.times.find(t=>t.s!==cl.bs.s);if(alt){out.push(`➡️ Switch <strong>${cl.b.name}</strong> to the ${fmt(alt.s)}–${fmt(alt.e)} slot on ${cl.day} to avoid overlap.`);return}}
+
+    // Try attending on different days
+    const aO=cl.a.days.filter(d=>!cl.b.days.includes(d)),bO=cl.b.days.filter(d=>!cl.a.days.includes(d));
+    if(aO.length||bO.length){
+      out.push(`➡️ On <strong>${cl.day}</strong>, attend <strong>${cl.a.days.length>cl.b.days.length?cl.b.name:cl.a.name}</strong> and catch the other on <strong>${(cl.a.days.length>cl.b.days.length?aO:bO)[0]||'another day'}</strong>.`);return;
+    }
+
+    // Last resort: suggest removing the one with more clashes
+    const dropId=clashCount[cl.a.id]>=clashCount[cl.b.id]?cl.a:cl.b;
+    const keepId=dropId===cl.a?cl.b:cl.a;
+    const simIds2=SIMILAR[dropId.id]||[];
+    const sim2=simIds2.map(id=>SOC.find(c=>c.id===id)).filter(Boolean).filter(s=>!planSet.has(s.id));
+    let sug=`⚠️ <strong>${dropId.name}</strong> has the most clashes — consider removing it to free up your schedule.`;
+    if(sim2.length) sug+=` <strong>${sim2[0].name}</strong> is a similar alternative that may fit better.`;
+    out.push(sug);
+  });
+  return out;
+}
+
+// ===== WEEKLY =====
+function weekHTML(ch){
+  const order=['Mon','Tue','Wed','Thu','Fri','Sat','Sun'],sc={};
+  ch.forEach(c=>c.days.forEach(d=>{if(!sc[d])sc[d]=[];c.times.forEach(t=>sc[d].push({...c,slot:t}))}));
+  let h=`<div class="dv">Weekly Overview</div>`;
+  order.forEach(day=>{
+    if(!sc[day])return;
+    const sorted=sc[day].sort((a,b)=>toMin(a.slot.s)-toMin(b.slot.s));
+    h+=`<div class="wc"><div class="wdh">${day}</div>`;
+    sorted.forEach(it=>h+=`<div class="wi"><div class="wt">${fmt(it.slot.s)}<br>${fmt(it.slot.e)}</div><span class="wki">${it.icon}</span><div class="wkn"><h5>${it.name}${it.slot.label?' · '+it.slot.label:''}</h5><p>${it.loc}${it.coach?' · Coach '+it.coach:''}</p></div></div>`);
+    h+=`</div>`;
+  });
+  return h;
+}
+
+// ===== CALENDAR (April-May 2026 only) =====
+function downloadCal(){
+  const ch=getEffective();if(!ch.length)return;
+  const dm={Mon:'MO',Tue:'TU',Wed:'WE',Thu:'TH',Fri:'FR',Sat:'SA',Sun:'SU'};
+  // Start dates: first occurrence in April 2026
+  const dd={Mon:'20260406',Tue:'20260407',Wed:'20260408',Thu:'20260409',Fri:'20260410',Sat:'20260411',Sun:'20260412'};
+  let ics=`BEGIN:VCALENDAR\r\nVERSION:2.0\r\nPRODID:-//NVT SOO//Class Planner//EN\r\nCALSCALE:GREGORIAN\r\nX-WR-CALNAME:NVT SOO Classes (Apr-May)\r\nX-WR-TIMEZONE:Asia/Kolkata\r\nBEGIN:VTIMEZONE\r\nTZID:Asia/Kolkata\r\nBEGIN:STANDARD\r\nDTSTART:19700101T000000\r\nTZOFFSETFROM:+0530\r\nTZOFFSETTO:+0530\r\nTZNAME:IST\r\nEND:STANDARD\r\nEND:VTIMEZONE\r\n`;
+  ch.forEach(c=>c.days.forEach(day=>c.times.forEach(t=>{
+    const lbl=t.label?' ('+t.label+')':'';
+    // All classes end May 31 2026 — 2 month window only
+    ics+=`BEGIN:VEVENT\r\nUID:nvt-${c.id}-${day}-${t.s.replace(':','')}@nvtsoo.app\r\nDTSTART;TZID=Asia/Kolkata:${dd[day]}T${t.s.replace(':','')}00\r\nDTEND;TZID=Asia/Kolkata:${dd[day]}T${t.e.replace(':','')}00\r\nRRULE:FREQ=WEEKLY;BYDAY=${dm[day]};UNTIL=20260531T235959Z\r\nSUMMARY:${c.icon} ${c.name}${lbl}\r\nDESCRIPTION:Coach: ${c.coach||'TBA'}\\nPhone: ${c.phone||'N/A'}\\nLocation: ${c.loc}${c.temp?'\\n⏳ Summer batch only (Apr-May)':''}${c.rmk?'\\nNote: '+c.rmk:''}\r\nLOCATION:${c.loc}\\, NVT SOO\r\nBEGIN:VALARM\r\nTRIGGER:-PT30M\r\nACTION:DISPLAY\r\nDESCRIPTION:${c.name} in 30 minutes!\r\nEND:VALARM\r\nBEGIN:VALARM\r\nTRIGGER:-PT10M\r\nACTION:DISPLAY\r\nDESCRIPTION:${c.name} starts in 10 min! Head to ${c.loc}\r\nEND:VALARM\r\nEND:VEVENT\r\n`;
+  })));
+  ics+=`END:VCALENDAR\r\n`;
+  const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([ics],{type:'text/calendar'}));a.download='NVT_SOO_Classes_Apr_May.ics';a.click();
+}
+</script>
+</body>
+</html>
