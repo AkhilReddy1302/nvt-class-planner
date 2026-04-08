@@ -197,11 +197,11 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:30px;heigh
           <span class="sg-chip" onclick="fill('I want my daughter to get into a good US college after IB — need strong extracurriculars')">🎓 College Prep</span>
           <span class="sg-chip" onclick="fill('I want my son to become a national level player in a sport with less competition')">🏆 Go National</span>
           <span class="sg-chip" onclick="fill('My child spends too much time on screens, I want to build an active lifestyle')">💪 Get Active</span>
-          <span class="sg-chip" onclick="fill('I want my child to develop creativity through art, music and dance')">🎨 Creative</span>
           <span class="sg-chip" onclick="fill('My child is hyperactive and needs to build focus, discipline and patience')">🧘 Focus</span>
-          <span class="sg-chip" onclick="fill('My child is shy and needs to make friends and build confidence')">👫 Social</span>
+          <span class="sg-chip" onclick="fill('I want my kid to be like Dhoni — calm, strategic, a born leader')">🏏 Like Dhoni</span>
+          <span class="sg-chip" onclick="fill('My kid wants to be like Modiji — a strong leader and communicator')">🇮🇳 Like Modi</span>
         </div>
-        <textarea id="ambInput" placeholder="e.g. 'My 6-year-old loves running around, I want to channel that into a sport, and maybe learn an instrument on weekends'"></textarea>
+        <textarea id="ambInput" placeholder="e.g. 'I want my kid to be like Dhoni' or 'build a strong profile for US college admissions' or 'national level athlete in a sport with less competition'"></textarea>
         <div style="margin-top:12px"><button class="btn btn-g" onclick="exploreNLP()">✨ Get Recommendations</button></div>
       </div>
       <div id="formMode" style="display:none">
@@ -675,10 +675,114 @@ const AMBITIONS=[
   }
 ];
 
+// ===== ROLE MODELS =====
+// When parents say "I want my kid to be like X", map to ambitions + custom advice
+const ROLE_MODELS=[
+  {names:['modi','modiji','narendra modi','pm modi','prime minister'],
+   label:'🇮🇳 Leader & Orator like Modi',
+   // Modi is known for: yoga, oratory, discipline, strategic thinking, mass communication
+   advice:{
+     7:{boost:15,reason:"Modi is one of the world's most famous yoga practitioners and championed International Yoga Day. Yoga builds the discipline, calm and body-mind connection that defines his persona. Start here."},
+     4:{boost:14,reason:"Modi is known for powerful oratory — his speeches move millions. Vocal training builds projection, breath control and stage confidence. Public speaking starts with learning to use your voice well."},
+     10:{boost:13,reason:"Modi is a master strategist — from Gujarat CM to PM, every move was calculated. Chess builds exactly this kind of strategic, long-term thinking. The patience and planning chess teaches mirrors political acumen."},
+     12:{boost:11,reason:"Modi's discipline is legendary — strict routine, fasting, minimal sleep. Taekwondo builds this iron discipline through structure, respect and physical rigor. Belt progression teaches long-term goal setting."},
+     9:{boost:7,reason:"Music builds emotional intelligence and memory — both crucial for connecting with people. Modi uses music and poetry in his speeches. Keyboard training develops the rhythm and timing that great communicators have."},
+     6:{boost:8,reason:"Body language and stage presence are central to Modi's communication style. Dance & Movement builds exactly this — grace, confidence, and the ability to command attention in any room."},
+     13:{boost:6,reason:"Swimming builds stamina and mental toughness. Leaders need physical endurance — Modi maintains a punishing schedule that requires exceptional fitness."},
+     1:{boost:6,reason:"Team sports build the leadership and people management skills every leader needs. Learning to motivate teammates translates directly to motivating communities."},
+     101:{boost:9,reason:"Cricket in India is politics, strategy and mass entertainment combined. Understanding cricket culture is practically a prerequisite for connecting with the Indian public."},
+     105:{boost:8,reason:"Modi's Digital India vision shows how tech-savvy leaders shape nations. Coding and tech literacy will be essential for the next generation of leaders."}
+   }},
+  {names:['dhoni','ms dhoni','mahi','captain cool','thala'],
+   label:'🏏 Captain Cool like Dhoni',
+   advice:{
+     10:{boost:15,reason:"Dhoni is famous for his calm, calculated decisions under pressure — pure chess thinking on a cricket field. Chess builds exactly this temperament: think 3 moves ahead, stay cool when stakes are highest."},
+     1:{boost:12,reason:"Dhoni started as a goalkeeper in football before cricket. Team sports build the leadership, quick reflexes and split-second decision-making that defined Captain Cool."},
+     13:{boost:10,reason:"Swimming builds the cardiovascular fitness and mental calm that elite athletes need. Dhoni's legendary composure comes from a body and mind trained to stay steady under pressure."},
+     7:{boost:11,reason:"Dhoni's calm comes from within. Yoga and mindfulness build the emotional regulation that lets you hit a six when 15 crores are watching. Mental strength is trainable."},
+     12:{boost:9,reason:"Martial arts build the explosive power and reflexes that make great wicketkeepers. Dhoni's lightning stumpings are pure reflexive athleticism."},
+     5:{boost:8,reason:"Badminton builds the hand-eye coordination and quick reflexes that are the foundation of batting and wicketkeeping. Great cross-training for any aspiring cricketer."},
+     101:{boost:14,reason:"If your child wants to be Dhoni, cricket coaching is non-negotiable. Start early (age 6-8), join a serious academy (KSCA in Bangalore), and train consistently. Talent + early start + right coaching = the Dhoni formula."},
+     110:{boost:8,reason:"Running fitness is the base of cricket. Dhoni's fitness at 38+ was remarkable. Athletics builds the speed and endurance foundation that keeps cricketers performing at the highest level."}
+   }},
+  {names:['viswanathan anand','vishy','anand','chess champion','magnus','carlsen'],
+   label:'♟️ Chess Champion like Anand',
+   advice:{
+     10:{boost:16,reason:"This is the direct path. Anand started chess at age 6 and became India's first grandmaster. Join chess class NOW, get a FIDE rating, compete in state tournaments. India's chess ecosystem is world-class — the next Anand could come from SOO."},
+     7:{boost:10,reason:"Anand credits yoga and meditation for his ability to concentrate during 5-hour games. Mental endurance is as important as chess skill at the competitive level."},
+     9:{boost:8,reason:"Music and chess share deep structural patterns. Many grandmasters play instruments — it builds pattern recognition, memory, and the ability to think in sequences."},
+     13:{boost:6,reason:"Physical fitness is crucial for competitive chess — long tournaments are physically draining. Swimming builds stamina without taking too much time away from chess practice."},
+     105:{boost:9,reason:"Computer science and chess are deeply connected. AI chess engines are essential training tools. Kids who code understand algorithms — that directly helps chess improvement."}
+   }},
+  {names:['mary kom','boxer','boxing','fighter','mc mary kom'],
+   label:'🥊 Champion Fighter like Mary Kom',
+   advice:{
+     12:{boost:15,reason:"Taekwondo is the closest available martial art to boxing — builds striking power, footwork, discipline and competitive fighting spirit. Mary Kom started with limited resources but unlimited determination. Belt progression mirrors the championship journey."},
+     13:{boost:11,reason:"Swimming builds the full-body strength and cardiovascular fitness that combat athletes need. Mary Kom's stamina was legendary — swimming develops exactly that foundation."},
+     7:{boost:10,reason:"Flexibility and injury prevention are crucial for fighters. Yoga builds the body awareness and recovery capacity that lets athletes train hard without breaking down."},
+     1:{boost:8,reason:"Basketball builds explosive power, footwork and competitive intensity. The physical demands of basketball translate well to combat sports."},
+     11:{boost:7,reason:"Skating builds exceptional balance and leg strength — the foundation of all striking sports. Strong legs = powerful punches."},
+     108:{boost:14,reason:"Karate is a direct path to competitive martial arts. India's combat sports scene is growing with more Olympic recognition. National championships are achievable with dedicated training."}
+   }},
+  {names:['sachin','tendulkar','god of cricket','master blaster','little master'],
+   label:'🏏 Master Blaster like Sachin',
+   advice:{
+     101:{boost:15,reason:"Sachin started with a tennis ball at age 11 and was playing for India at 16. Cricket coaching from a quality academy is step one. Bangalore's KSCA and private academies offer excellent junior programs. Start by age 7-8 for the best results."},
+     3:{boost:10,reason:"Sachin credits tennis ball cricket for developing his batting technique. Tennis builds hand-eye coordination, quick reflexes and wrist work — all essential for a batsman. Many coaches recommend tennis as cross-training."},
+     5:{boost:8,reason:"Badminton builds the wrist strength and racket skills that translate to batting power. The shuttle speed trains reflexes that help face fast bowling."},
+     7:{boost:9,reason:"Sachin played international cricket for 24 years — extraordinary longevity. Yoga prevents injuries and builds the flexibility that keeps athletes performing decade after decade."},
+     10:{boost:7,reason:"Cricket at the highest level is a chess match — field placements, bowling changes, batting strategy. Chess thinking develops the tactical mind that separates good batsmen from great ones."},
+     13:{boost:7,reason:"Swimming builds the shoulder strength and overall fitness needed for long batting innings. It's low-impact, so it keeps young athletes fit without risking cricket injuries."}
+   }},
+  {names:['sundar pichai','pichai','google','tech','ceo','startup','entrepreneur','elon','musk','zuckerberg','jobs','steve jobs'],
+   label:'💻 Tech Leader like Sundar Pichai',
+   advice:{
+     10:{boost:14,reason:"Pichai is known for strategic, analytical thinking. Chess builds this from childhood — logical reasoning, pattern recognition, and the ability to evaluate complex situations quickly. Every tech CEO thinks in chess moves."},
+     9:{boost:10,reason:"Pichai and many tech leaders are musicians. Keyboard/Piano builds mathematical thinking, pattern recognition, and the disciplined practice habits that carry into engineering and leadership."},
+     105:{boost:15,reason:"Coding is the language of tech. Start with Scratch (age 6-8), move to Python (age 10+), build projects, enter hackathons. Bangalore is India's tech capital — the ecosystem to nurture a future tech leader is right here."},
+     7:{boost:8,reason:"Tech leaders face intense pressure and long hours. Yoga builds the mental resilience and stress management that Pichai credits for his calm leadership style at Google."},
+     8:{boost:7,reason:"Design thinking is central to tech. Drawing develops visual thinking, creativity, and the user-empathy that makes products great. Apple's success was built on design."},
+     13:{boost:6,reason:"Physical fitness combats the sedentary nature of tech work. Swimming is the best full-body exercise for people who spend hours at screens."}
+   }},
+  {names:['kohli','virat','king kohli','run machine'],
+   label:'🏏 Fitness Beast like Virat Kohli',
+   advice:{
+     101:{boost:14,reason:"Kohli's cricket skills were honed at the Delhi cricket academy from age 9. Quality coaching + obsessive practice is the formula. Bangalore academies can provide this foundation."},
+     13:{boost:12,reason:"Kohli transformed Indian cricket's fitness culture. Swimming builds the cardiovascular base and muscle recovery that his regime demands. He's proof that fitness = performance."},
+     7:{boost:11,reason:"Kohli does yoga religiously — it's a core part of his training. Flexibility, injury prevention, and mental focus. His discipline on and off the field starts with practices like yoga."},
+     12:{boost:10,reason:"Kohli's aggression is disciplined, not reckless. Martial arts teach exactly this — controlled intensity, discipline, and the competitive fire that Kohli brings to every match."},
+     1:{boost:8,reason:"Basketball-style agility training is part of modern cricket fitness. It builds the explosive movement, catching skills, and athletic fielding that Kohli is famous for."},
+     110:{boost:9,reason:"Running fitness is the backbone of Kohli's game — he's the fittest cricketer of his generation. Athletics training builds the speed and endurance foundation that separates elite athletes."}
+   }},
+  {names:['sindhu','pv sindhu','badminton champion','saina','nehwal'],
+   label:'🏸 Champion like PV Sindhu',
+   advice:{
+     5:{boost:16,reason:"The direct path. Sindhu started badminton at age 8 at the Pullela Gopichand Academy. Bangalore has excellent badminton coaching — Prakash Padukone's academy is nearby. Start early, train seriously, compete in junior tournaments."},
+     13:{boost:10,reason:"Sindhu's stamina on court is extraordinary — some rallies last 30+ shots. Swimming builds the cardiovascular endurance and mental toughness for marathon matches."},
+     7:{boost:10,reason:"Flexibility prevents injuries in a sport that demands extreme lunging and reaching. Yoga builds the body awareness and recovery that lets players train intensely every day."},
+     12:{boost:8,reason:"Martial arts build the explosive footwork and mental discipline that elite badminton requires. The competitive mindset transfers directly."},
+     110:{boost:9,reason:"Speed and agility are everything in badminton. Athletics training builds the quick feet and explosive first step that define champions like Sindhu."}
+   }}
+];
+
 // ===== SCORING =====
 function detectAmbitions(text){
   text=text.toLowerCase();
   const matched=[];
+
+  // Check role models first
+  let roleModel=null;
+  for(const rm of ROLE_MODELS){
+    for(const n of rm.names){
+      if(text.includes(n)){roleModel=rm;break}
+    }
+    if(roleModel)break;
+  }
+  if(roleModel){
+    matched.push({id:'rolemodel',detect:[],label:roleModel.label,advice:roleModel.advice,hits:10});
+  }
+
+  // Then check ambition profiles
   AMBITIONS.forEach(a=>{
     let hits=0;
     a.detect.forEach(d=>{if(text.includes(d))hits++});
